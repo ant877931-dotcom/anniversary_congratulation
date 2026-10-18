@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Our Little Love Story — Happy 1st Anniversary</title>
+
+  <!-- Google Fonts: Playfair Display, Quicksand, Dancing Script -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. COLOR PALETTE & DESIGN SYSTEM
+       ========================================================================== */
+    :root {
+      /* Soft pastel romantic palette */
+      --bg-white: #FFFDFE;
+      --warm-white: #FFFCFD;
+      --pale-pink: #FCEAF0;
+      --blush-pink: #F5D1DF;
+      --rose-accent: #D98EAB;
+      --dark-rose-text: #795263;
+      --text-muted: #9C788A;
+      --gold-border: rgba(217, 142, 171, 0.38);
+
+      /* Typography */
+      --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --font-body: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-script: 'Dancing Script', 'Brush Script MT', cursive;
+
+      /* Responsive Book Geometry: strictly one physical book across all screens */
+      --book-width: clamp(290px, 86vw, 420px);
+      --book-height: clamp(490px, 84vh, 610px);
+
+      /* Cover Opening Physics */
+      --open-duration: 1.4s;
+      --open-easing: cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    /* ==========================================================================
+       2. RESET & BASE LAYOUT
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden; /* Prevent horizontal and vertical window scrollbars */
+      font-family: var(--font-body);
+      color: var(--dark-rose-text);
+      background: linear-gradient(135deg, var(--bg-white) 0%, var(--pale-pink) 50%, #F8DEE8 100%);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--rose-accent);
+      outline-offset: 3px;
+    }
+
+    /* ==========================================================================
+       3. 3D BOOK CONTAINER & SCENE
+       Main container holding the book in a stable 3D layout.
+       ========================================================================== */
+    .book-container {
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      perspective: 1200px;
+      perspective-origin: center center;
+      position: relative;
+    }
+
+    /* ==========================================================================
+       4. THE PHYSICAL BOOK (.book)
+       Contains exactly two principal visual layers: .book-cover and .book-inside
+       ========================================================================== */
+    .book {
+      position: relative;
+      width: var(--book-width);
+      height: var(--book-height);
+      max-height: 88dvh;
+      transform-style: preserve-3d;
+      border-radius: 4px 14px 14px 4px;
+      user-select: none;
+      /* Soft dimensional ambient book shadow */
+      box-shadow:
+        0 22px 50px -10px rgba(121, 82, 99, 0.20),
+        0 6px 18px rgba(121, 82, 99, 0.08);
+      transition: box-shadow var(--open-duration) var(--open-easing);
+    }
+
+    .book.is-open {
+      box-shadow:
+        -12px 24px 52px -8px rgba(121, 82, 99, 0.18),
+        0 8px 20px rgba(121, 82, 99, 0.09);
+    }
+
+    /* ==========================================================================
+       5. LAYER 2 — STATIONARY INSIDE PAGE (.book-inside)
+       Positioned directly underneath the cover from the start.
+       ========================================================================== */
+    .book-inside {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at top right, #FFF7FA 0%, transparent 68%),
+        var(--warm-white);
+      border-radius: 4px 14px 14px 4px;
+      padding: clamp(1.6rem, 4.5vw, 2.3rem) clamp(1.2rem, 4vw, 2rem) 2.6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--gold-border);
+      z-index: 1; /* Permanently underneath the cover */
+      overflow: hidden;
+      /* Stacked paper edge effect along right and bottom */
+      box-shadow:
+        inset 4px 0 10px rgba(121, 82, 99, 0.04),
+        1px 1px 0 #F5E6EC,
+        2px 2px 0 #FFF7FA,
+        3px 3px 0 #F5E6EC,
+        4px 4px 0 #FFF7FA,
+        5px 5px 0 #F5E6EC;
+    }
+
+    /* Spine crease shadow on the left edge */
+    .book-inside::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 18px;
+      background: linear-gradient(to right, rgba(121, 82, 99, 0.16) 0%, rgba(121, 82, 99, 0.03) 65%, transparent 100%);
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* Thin inset frame */
+    .inside-frame {
+      position: absolute;
+      inset: 10px 10px 10px 20px;
+      border: 1px solid rgba(217, 142, 171, 0.28);
+      border-radius: 2px 8px 8px 2px;
+      pointer-events: none;
+    }
+
+    .inside-header {
+      text-align: center;
+      margin-bottom: 0.45rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Exact label: ♡ OUR LITTLE STORY ♡ */
+    .inside-intro-label {
+      font-size: 0.74rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    /* Exact heading: Happy 1st Anniversary, my love! */
+    .main-anniversary-heading {
+      font-family: var(--font-heading);
+      font-size: clamp(1.35rem, 3.8vw, 1.8rem);
+      font-weight: 500;
+      line-height: 1.25;
+      color: var(--dark-rose-text);
+      text-shadow: 0 1px 2px rgba(245, 209, 223, 0.4);
+    }
+
+    .heading-rose-accent {
+      display: block;
+      color: var(--rose-accent);
+      font-style: italic;
+      font-weight: 400;
+      margin-top: 0.15rem;
+    }
+
+    .inside-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin: 0.45rem auto;
+      width: 55%;
+      color: var(--rose-accent);
+      font-size: 0.72rem;
+      opacity: 0.75;
+      position: relative;
+      z-index: 2;
+    }
+
+    .inside-divider::before,
+    .inside-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(217, 142, 171, 0.4), transparent);
+    }
+
+    /* Personal letter area: scrollable internally if needed without scrolling the book */
+    .love-letter {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--blush-pink) transparent;
+      padding: 0.15rem 0.2rem 0.35rem;
+      margin: 0.15rem 0;
+      text-align: left;
+      position: relative;
+      z-index: 2;
+    }
+
+    .love-letter::-webkit-scrollbar {
+      width: 4px;
+    }
+    .love-letter::-webkit-scrollbar-thumb {
+      background: var(--blush-pink);
+      border-radius: 4px;
+    }
+
+    /* Text container with thin rose left border */
+    .letter-placeholder-box {
+      background: rgba(252, 234, 240, 0.42);
+      border-left: 3px solid var(--rose-accent);
+      padding: 0.65rem 0.85rem;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .letter-paragraph {
+      font-size: clamp(0.86rem, 2.25vw, 0.94rem);
+      line-height: 1.72;
+      color: var(--dark-rose-text);
+      margin-bottom: 0.6rem;
+    }
+
+    .letter-paragraph:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Exact Signature Block: centered, with Maudy Apriliyani ♥ in Dancing Script */
+    .inside-footer {
+      text-align: center;
+      padding-top: 0.45rem;
+      padding-bottom: 0.1rem;
+      border-top: 1px dashed rgba(217, 142, 171, 0.32);
+      position: relative;
+      z-index: 2;
+    }
+
+    .signature-line-1 {
+      font-size: 0.84rem;
+      color: var(--dark-rose-text);
+      font-style: italic;
+      margin-bottom: 0.12rem;
+    }
+
+    .signature-line-2 {
+      font-size: 0.78rem;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 0.12rem;
+    }
+
+    .signature-name {
+      font-family: var(--font-script);
+      font-size: clamp(1.42rem, 3.9vw, 1.82rem);
+      color: var(--rose-accent);
+      line-height: 1.25;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+    }
+
+    /* Floating music toggle near bottom-right corner of the inside page */
+    .music-toggle {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      z-index: 15;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(217, 142, 171, 0.45);
+      color: var(--dark-rose-text);
+      padding: 0.32rem 0.72rem;
+      border-radius: 9999px;
+      font-family: var(--font-body);
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      box-shadow: 0 2px 10px rgba(217, 142, 171, 0.18);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .music-toggle:hover {
+      background: #FFFFFF;
+      color: var(--rose-accent);
+      border-color: var(--rose-accent);
+      transform: scale(1.04);
+    }
+
+    .music-toggle:active {
+      transform: scale(0.97);
+    }
+
+    /* ==========================================================================
+       6. LAYER 1 — 3D BOOK COVER (.book-cover)
+       Hinged on the left spine; swings open to -135deg
+       ========================================================================== */
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform var(--open-duration) var(--open-easing);
+      will-change: transform;
+      z-index: 10;
+      border-radius: 4px 14px 14px 4px;
+      cursor: default;
+    }
+
+    /* Cover swings open to -135deg */
+    .book.is-open .book-cover {
+      transform: perspective(1200px) rotateY(-135deg);
+      pointer-events: none; /* Let user freely interact with inside letter & controls */
+    }
+
+    .cover-front,
+    .cover-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 4px 14px 14px 4px;
+      overflow: hidden;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .cover-front {
+      background: linear-gradient(145deg, #FFF6FA 0%, var(--pale-pink) 50%, var(--blush-pink) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: clamp(2rem, 5.5vw, 3rem) clamp(1.4rem, 5vw, 2.2rem);
+      text-align: center;
+      box-shadow:
+        inset -2px 0 10px rgba(121, 82, 99, 0.05),
+        inset 2px 0 6px rgba(255, 255, 255, 0.85);
+      z-index: 2;
+    }
+
+    /* Spine crease shadow */
+    .cover-front::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 20px;
+      background: linear-gradient(to right,
+        rgba(121, 82, 99, 0.24) 0%,
+        rgba(121, 82, 99, 0.07) 45%,
+        rgba(255, 255, 255, 0.32) 75%,
+        transparent 100%);
+      border-right: 1px dashed rgba(217, 142, 171, 0.32);
+      pointer-events: none;
+    }
+
+    /* Thin inset border */
+    .cover-inset-border {
+      position: absolute;
+      inset: 14px 14px 14px 26px;
+      border: 1px solid rgba(217, 142, 171, 0.42);
+      border-radius: 2px 8px 8px 2px;
+      pointer-events: none;
+    }
+
+    .cover-inset-border::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(217, 142, 171, 0.20);
+      border-radius: 1px 6px 6px 1px;
+    }
+
+    /* Back of the cover (Revealed gracefully at -135deg on the left) */
+    .cover-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(145deg, #FFF7FA 0%, var(--pale-pink) 100%);
+      border: 1px solid rgba(217, 142, 171, 0.35);
+      box-shadow: inset 8px 0 16px rgba(121, 82, 99, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .cover-back-embellishment {
+      font-family: var(--font-script);
+      font-size: 1.55rem;
+      color: var(--rose-accent);
+      opacity: 0.85;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    /* Cover Content */
+    .cover-header {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cover-heart-top {
+      font-size: 1.55rem;
+      color: var(--rose-accent);
+      margin-bottom: 0.65rem;
+      filter: drop-shadow(0 2px 4px rgba(217, 142, 171, 0.3));
+      display: inline-block;
+    }
+
+    .cover-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.65rem, 4.5vw, 2.1rem);
+      font-weight: 500;
+      color: var(--dark-rose-text);
+      line-height: 1.25;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.45rem;
+    }
+
+    .cover-subtitle {
+      font-family: var(--font-body);
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* Center "♥ Open Me ♥" Pill Button Area with Heart and Butterfly Decorations */
+    .cover-action {
+      position: relative;
+      z-index: 4;
+      margin: 1.2rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Dedicated button wrapper anchoring decorations around button edges */
+    .btn-action-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-open-me {
+      appearance: none;
+      -webkit-appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 0.85rem 2.2rem;
+      background: #FFFFFF;
+      color: var(--dark-rose-text);
+      font-family: var(--font-body);
+      font-size: 1.02rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      border: 1px solid rgba(217, 142, 171, 0.45);
+      border-radius: 9999px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(217, 142, 171, 0.25);
+      transition: all 0.25s ease;
+      animation: gentleCoverPulse 3s ease-in-out infinite;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-open-me:hover {
+      background: #FFF7FA;
+      border-color: var(--rose-accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(217, 142, 171, 0.35);
+      color: var(--rose-accent);
+    }
+
+    .btn-open-me:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-open-heart {
+      color: var(--rose-accent);
+      font-size: 0.95em;
+    }
+
+    @keyframes gentleCoverPulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 18px rgba(217, 142, 171, 0.25);
+      }
+      50% {
+        transform: scale(1.03);
+        box-shadow: 0 6px 26px rgba(217, 142, 171, 0.38);
+      }
+    }
+
+    /* ==========================================================================
+       COVER DECORATION 1: BLINKING / PULSING PINK HEART
+       Playfully positioned resting on the TOP-LEFT edge/corner of the button
+       ========================================================================== */
+    .cover-idle-heart {
+      position: absolute;
+      top: -12px;
+      left: 6px;
+      width: 22px;
+      height: 22px;
+      color: #E87A9E;
+      fill: currentColor;
+      filter: drop-shadow(0 2px 6px rgba(232, 122, 158, 0.48));
+      animation: gentleHeartbeat 1.8s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 4;
+      transform-origin: center center;
+    }
+
+    .idle-heart-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @keyframes gentleHeartbeat {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.84;
+      }
+      14% {
+        transform: scale(1.22);
+        opacity: 1;
+      }
+      28% {
+        transform: scale(1.05);
+        opacity: 0.90;
+      }
+      42% {
+        transform: scale(1.28);
+        opacity: 1;
+      }
+      70% {
+        transform: scale(1);
+        opacity: 0.84;
+      }
+    }
+
+    /* ==========================================================================
+       COVER DECORATION 2: RESTING BUTTERFLY
+       Playfully perched resting on the TOP-RIGHT edge/corner of the button
+       ========================================================================== */
+    .resting-butterfly {
+      position: absolute;
+      top: -16px;
+      right: 2px;
+      width: 26px;
+      height: 22px;
+      transform-style: preserve-3d;
+      perspective: 400px;
+      filter: drop-shadow(0 2px 6px rgba(121, 82, 99, 0.30));
+      pointer-events: none;
+      z-index: 4;
+      transform: rotate(18deg); /* Tilted gracefully on the button boundary */
+    }
+
+    .resting-torso {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 2.6px;
+      height: 14px;
+      background: #5A3546;
+      border-radius: 2px;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+    }
+
+    .resting-torso::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      width: 4px;
+      height: 4px;
+      background: #5A3546;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .resting-wing {
+      position: absolute;
+      top: 0;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(135deg, #FFB4CC 0%, #D85680 100%);
+      border: 1px solid rgba(121, 82, 99, 0.35);
+      box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.7);
+    }
+
+    .resting-wing-left {
+      right: 50%;
+      border-radius: 75% 25% 25% 75% / 70% 30% 70% 30%;
+      transform-origin: right center;
+      animation: restingFlapLeft 1.7s ease-in-out infinite alternate;
+    }
+
+    .resting-wing-right {
+      left: 50%;
+      border-radius: 25% 75% 75% 25% / 30% 70% 30% 70%;
+      transform-origin: left center;
+      animation: restingFlapRight 1.7s ease-in-out infinite alternate;
+    }
+
+    @keyframes restingFlapLeft {
+      0%, 20%   { transform: rotateY(0deg) rotateZ(-4deg); }
+      50%       { transform: rotateY(42deg) rotateZ(-4deg); }
+      75%, 100% { transform: rotateY(16deg) rotateZ(-4deg); }
+    }
+
+    @keyframes restingFlapRight {
+      0%, 20%   { transform: rotateY(0deg) rotateZ(4deg); }
+      50%       { transform: rotateY(-42deg) rotateZ(4deg); }
+      75%, 100% { transform: rotateY(-16deg) rotateZ(4deg); }
+    }
+
+    .cover-bottom {
+      position: relative;
+      z-index: 3;
+      font-family: var(--font-script);
+      font-size: 1.35rem;
+      color: var(--rose-accent);
+      opacity: 0.95;
+    }
+
+    /* ==========================================================================
+       7. CRITICAL VISUAL EFFECT: CONTINUOUS DIAGONAL BUTTERFLY SWARM
+       Bottom-left -> Across the book -> Top-right -> Off-screen
+       ========================================================================== */
+    .butterfly-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      overflow: hidden;
+      perspective: 1000px;
+    }
+
+    .butterfly-item {
+      position: fixed;
+      pointer-events: none;
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
+      filter: drop-shadow(0 3px 8px rgba(121, 82, 99, 0.38));
+      opacity: 0;
+      display: block;
+      z-index: 1001;
+    }
+
+    .butterfly-torso {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 3.2px;
+      height: 17px;
+      background: #5A3546;
+      border-radius: 3px;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+    }
+
+    .butterfly-torso::before {
+      content: '';
+      position: absolute;
+      top: -3.5px;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: #5A3546;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Delicate, broad organic flying butterfly wings */
+    .butterfly-wing {
+      position: absolute;
+      top: 0;
+      width: 54%;
+      height: 100%;
+      background: var(--wing-gradient, linear-gradient(135deg, #FFB4CC 0%, #D85680 100%));
+      border: 1px solid rgba(121, 82, 99, 0.35);
+      box-shadow:
+        inset 0 0 6px rgba(255, 255, 255, 0.7),
+        0 2px 6px rgba(121, 82, 99, 0.2);
+    }
+
+    .butterfly-wing.wing-left {
+      right: 50%;
+      border-radius: 75% 25% 25% 75% / 70% 30% 70% 30%;
+      transform-origin: right center;
+      animation: flapLeftWing var(--flap-speed, 0.12s) ease-in-out infinite alternate;
+    }
+
+    .butterfly-wing.wing-right {
+      left: 50%;
+      border-radius: 25% 75% 75% 25% / 30% 70% 30% 70%;
+      transform-origin: left center;
+      animation: flapRightWing var(--flap-speed, 0.12s) ease-in-out infinite alternate;
+    }
+
+    @keyframes flapLeftWing {
+      0%   { transform: rotateY(0deg) rotateZ(-6deg) scale(1); }
+      100% { transform: rotateY(48deg) rotateZ(-6deg) scale(0.92); }
+    }
+
+    @keyframes flapRightWing {
+      0%   { transform: rotateY(0deg) rotateZ(6deg) scale(1); }
+      100% { transform: rotateY(-48deg) rotateZ(6deg) scale(0.92); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       REQUIRED AUDIO ELEMENTS
+       Place audio assets in "sound/my_love.mp3" and "sound/open.mp3".
+       ======================================================================== -->
+  <audio id="bg-music" src="sound/my_love.mp3" loop></audio>
+  <audio id="open-sfx" src="sound/open.mp3"></audio>
+
+  <!-- Full-screen continuous butterfly swarm overlay -->
+  <div id="butterflyOverlay" class="butterfly-overlay" aria-hidden="true"></div>
+
+  <!-- ========================================================================
+       MAIN 3D BOOK CONTAINER
+       ======================================================================== -->
+  <main class="book-container">
+
+    <!-- The Single Physical 3D Book (.book) -->
+    <article id="anniversaryBook" class="book" aria-label="Anniversary Love Book">
+
+      <!-- ====================================================================
+           LAYER 2 — INSIDE PAGE & ANNIVERSARY LETTER (.book-inside)
+           ==================================================================== -->
+      <section class="book-inside" id="bookInside" aria-label="Anniversary Letter Page">
+        <div class="inside-frame" aria-hidden="true"></div>
+
+        <!-- Inside Page Header -->
+        <header class="inside-header">
+          <!-- Exact label: ♡ OUR LITTLE STORY ♡ -->
+          <p class="inside-intro-label">♡ OUR LITTLE STORY ♡</p>
+
+          <!-- Exact heading: Happy 1st Anniversary, my love! -->
+          <h1 class="main-anniversary-heading">
+            Happy 1st Anniversary,<br>
+            <span class="heading-rose-accent">my love!</span>
+          </h1>
+        </header>
+
+        <!-- Delicate divider -->
+        <div class="inside-divider" aria-hidden="true">
+          <span>♡</span>
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- EXACT ANNIVERSARY LETTER CONTENT                                -->
+        <!-- ================================================================ -->
+        <div class="love-letter">
+          <div class="letter-placeholder-box">
+            <p class="letter-paragraph">My love,</p>
+            <p class="letter-paragraph">
+              One whole year of memories, laughter, little moments, and a love that keeps growing. Thank you for being part of my life and for making ordinary days feel special.
+            </p>
+            <p class="letter-paragraph">
+              This is only the beginning of our story. I look forward to all the memories we have yet to make, all the dreams we will share, and all the little moments that will become our favorite memories.
+            </p>
+            <p class="letter-paragraph">
+              Happy first anniversary, my love. Here's to us, today and always.
+            </p>
+          </div>
+        </div>
+
+        <!-- Exact Bottom-Center Signature -->
+        <footer class="inside-footer">
+          <p class="signature-line-1">Forever grateful that it's you. ♡</p>
+          <p class="signature-line-2">With all my love,</p>
+          <p class="signature-name">Maudy Apriliyani ♥</p>
+        </footer>
+
+        <!-- Bottom-Right Music Toggle (Inside the bounds of the inside page) -->
+        <button id="btnMusicToggle" 
+                class="music-toggle" 
+                type="button" 
+                aria-label="Toggle background music mute" 
+                aria-pressed="true">
+          ♪ Music: On ♡
+        </button>
+
+      </section>
+
+      <!-- ====================================================================
+           LAYER 1 — ELEGANT 3D BOOK COVER (.book-cover)
+           ==================================================================== -->
+      <div id="bookCover" class="book-cover">
+        
+        <!-- Front face of the cover -->
+        <div class="cover-front">
+          <div class="cover-inset-border" aria-hidden="true"></div>
+
+          <!-- Top decoration, Title & Subtitle -->
+          <header class="cover-header">
+            <div class="cover-heart-top" aria-hidden="true">♥</div>
+            <h2 class="cover-title">Our Little Love Story</h2>
+            <p class="cover-subtitle">A LITTLE SURPRISE FOR YOU</p>
+          </header>
+
+          <!-- Center Opening Pill Button with Heart (Top-Left) and Butterfly (Top-Right) -->
+          <div class="cover-action">
+            <div class="btn-action-wrapper">
+              <!-- 1. Small pulsing pink heart on TOP-LEFT edge of the button -->
+              <div class="cover-idle-heart" aria-hidden="true">
+                <svg viewBox="0 0 24 24" class="idle-heart-svg">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </div>
+
+              <!-- Main Open Me Pill Button -->
+              <button id="btnOpen" 
+                      class="btn-open-me" 
+                      type="button" 
+                      aria-label="Open anniversary book"
+                      aria-expanded="false">
+                <span class="btn-open-heart" aria-hidden="true">♥</span>
+                <span>Open Me</span>
+                <span class="btn-open-heart" aria-hidden="true">♥</span>
+              </button>
+
+              <!-- 2. Resting butterfly flapping wings on TOP-RIGHT edge of the button -->
+              <div class="resting-butterfly" aria-hidden="true">
+                <div class="resting-wing resting-wing-left"></div>
+                <div class="resting-wing resting-wing-right"></div>
+                <div class="resting-torso"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom handwritten detail -->
+          <footer class="cover-bottom">
+            <span>Chapter One & Always</span>
+          </footer>
+        </div>
+
+        <!-- Back face of the cover (Revealed naturally at -135deg on the left) -->
+        <div class="cover-back" aria-hidden="true">
+          <div class="cover-back-embellishment">
+            <span>Chapter One & Always ♡</span>
+          </div>
+        </div>
+
+      </div>
+
+    </article>
+  </main>
+
+  <!-- ========================================================================
+       INTERACTION, CONTINUOUS DIAGONAL BUTTERFLY SWARM & AUDIO SCRIPT
+       ======================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // DOM Elements
+      const anniversaryBook = document.getElementById('anniversaryBook');
+      const btnOpen = document.getElementById('btnOpen');
+      const butterflyOverlay = document.getElementById('butterflyOverlay');
+      const btnMusicToggle = document.getElementById('btnMusicToggle');
+
+      // Audio Elements
+      const bgMusic = document.getElementById('bg-music');
+      const openSfx = document.getElementById('open-sfx');
+
+      let isOpened = false;
+      let spawnIntervalId = null;
+
+      // Color Palette: Pastel pink, rose, magenta, and soft purple
+      const wingPalettes = [
+        'linear-gradient(135deg, #FFB4CC 0%, #D85680 100%)', // Rich Rose Pink
+        'linear-gradient(135deg, #FF6FA5 0%, #C2185B 100%)', // Vibrant Magenta
+        'linear-gradient(135deg, #E0C3FC 0%, #8E44AD 100%)', // Soft Purple / Lavender
+        'linear-gradient(135deg, #F8A5C2 0%, #9B1D56 100%)', // Deep Rose Magenta
+        'linear-gradient(135deg, #FFC3A0 0%, #D86389 100%)', // Peach Rose
+        'linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%)', // Pastel Pink Blossom
+        'linear-gradient(135deg, #EA7EA6 0%, #7B1FA2 100%)', // Orchid Purple
+        'linear-gradient(135deg, #FFFFFF 0%, #D98EAB 100%)'  // Glimmering Pearl White
+      ];
+
+      /* ======================================================================
+         SPAWN INDIVIDUAL DIAGONAL BUTTERFLY
+         Bottom-left -> Across book -> Top-right -> Off-screen
+         ====================================================================== */
+      function createDiagonalButterfly(isInitialFlurry) {
+        if (!butterflyOverlay) return;
+
+        const butterfly = document.createElement('div');
+        butterfly.className = 'butterfly-item';
+        butterfly.setAttribute('aria-hidden', 'true');
+
+        // Left wing
+        const leftWing = document.createElement('div');
+        leftWing.className = 'butterfly-wing wing-left';
+
+        // Right wing
+        const rightWing = document.createElement('div');
+        rightWing.className = 'butterfly-wing wing-right';
+
+        // Central body & head
+        const torso = document.createElement('div');
+        torso.className = 'butterfly-torso';
+
+        butterfly.appendChild(leftWing);
+        butterfly.appendChild(rightWing);
+        butterfly.appendChild(torso);
+
+        // Apply unique romantic gradient
+        const wingGrad = wingPalettes[Math.floor(Math.random() * wingPalettes.length)];
+        butterfly.style.setProperty('--wing-gradient', wingGrad);
+
+        // Size variations: 26px to 42px for delicate silhouette
+        const bWidth = 26 + Math.random() * 16;
+        const bHeight = bWidth * 0.82;
+        butterfly.style.width = bWidth + 'px';
+        butterfly.style.height = bHeight + 'px';
+
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
+        // 1. SPAWN POSITION: Bottom-left region of viewport / book (-5vw to 8vw, 86vh to 104vh)
+        const startX = vw * (-0.05 + Math.random() * 0.13);
+        const startY = vh * (0.86 + Math.random() * 0.18);
+
+        butterfly.style.left = startX + 'px';
+        butterfly.style.top = startY + 'px';
+
+        // 2. DESTINATION: Top-right corner beyond viewport (115vw to 130vw, -12vh to -25vh)
+        const targetX = vw * (1.15 + Math.random() * 0.15);
+        const targetY = vh * (-0.12 - Math.random() * 0.13);
+
+        const travelX = targetX - startX;
+        const travelY = targetY - startY;
+
+        // Gentle natural wobble across the diagonal flight path
+        const midWobbleX = (Math.random() - 0.5) * (vw * 0.14);
+        const midWobbleY = (Math.random() - 0.5) * (vh * 0.14);
+
+        // Heading angle aligned with diagonal trajectory (~40° to 52°)
+        const baseHeading = 46 + (Math.random() * 14 - 7);
+        const rotInitial = baseHeading - 7;
+        const rotMid = baseHeading + 7;
+        const rotFinal = baseHeading;
+
+        // Flapping speed (0.10s to 0.15s)
+        const flapSpeed = (0.10 + Math.random() * 0.05).toFixed(2) + 's';
+        butterfly.style.setProperty('--flap-speed', flapSpeed);
+
+        // Flight duration: 4 to 8 seconds
+        const flightDurMs = 4200 + Math.random() * 3200;
+        const delayMs = isInitialFlurry ? Math.random() * 1200 : 0;
+        const peakScale = 1.05 + Math.random() * 0.25;
+
+        butterflyOverlay.appendChild(butterfly);
+
+        // Animate along the bottom-left -> top-right diagonal path
+        const animation = butterfly.animate([
+          {
+            transform: 'translate3d(0px, 0px, 0px) rotate(' + rotInitial + 'deg) scale(0.5)',
+            opacity: 0,
+            offset: 0
+          },
+          {
+            transform: 'translate3d(' + (travelX * 0.08) + 'px, ' + (travelY * 0.08) + 'px, 15px) rotate(' + baseHeading + 'deg) scale(' + peakScale + ')',
+            opacity: 0.98,
+            offset: 0.08
+          },
+          {
+            transform: 'translate3d(' + (travelX * 0.50 + midWobbleX) + 'px, ' + (travelY * 0.50 + midWobbleY) + 'px, 35px) rotate(' + rotMid + 'deg) scale(' + (peakScale * 0.96) + ')',
+            opacity: 0.95,
+            offset: 0.55
+          },
+          {
+            transform: 'translate3d(' + (travelX * 0.85) + 'px, ' + (travelY * 0.85) + 'px, 20px) rotate(' + rotInitial + 'deg) scale(' + (peakScale * 0.9) + ')',
+            opacity: 0.88,
+            offset: 0.85
+          },
+          {
+            transform: 'translate3d(' + travelX + 'px, ' + travelY + 'px, 0px) rotate(' + rotFinal + 'deg) scale(' + (peakScale * 0.8) + ')',
+            opacity: 0,
+            offset: 1
+          }
+        ], {
+          duration: flightDurMs,
+          delay: delayMs,
+          easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
+          fill: 'both'
+        });
+
+        // Clean up butterfly element from DOM after flight finishes
+        animation.onfinish = function () {
+          if (butterfly.parentNode) {
+            butterfly.parentNode.removeChild(butterfly);
+          }
+        };
+      }
+
+      /* ======================================================================
+         START CONTINUOUS DIAGONAL BUTTERFLY SWARM
+         Initial flurry + recurring stream for as long as page remains open
+         ====================================================================== */
+      function startContinuousButterflySwarm() {
+        if (!butterflyOverlay) return;
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // 1. Initial burst of butterflies when opening the book
+        const initialCount = prefersReducedMotion ? 6 : 28;
+        for (let i = 0; i < initialCount; i++) {
+          createDiagonalButterfly(true);
+        }
+
+        // 2. Continuous recurring spawn logic while page remains open
+        const intervalMs = prefersReducedMotion ? 1400 : 320;
+        spawnIntervalId = setInterval(function () {
+          createDiagonalButterfly(false);
+        }, intervalMs);
+      }
+
+      /* ======================================================================
+         MAIN OPENING INTERACTION SEQUENCE
+         ====================================================================== */
+      function openBook() {
+        // Prevent repeated opening actions
+        if (isOpened) return;
+        isOpened = true;
+
+        // 1. Immediately disable and fade out the opening button area
+        btnOpen.disabled = true;
+        btnOpen.setAttribute('aria-expanded', 'true');
+        btnOpen.style.opacity = '0';
+        btnOpen.style.pointerEvents = 'none';
+
+        // 2. Add .is-open to start the cover's 3D rotation
+        anniversaryBook.classList.add('is-open');
+
+        // 3. Play opening sound effect and background music directly in click handler
+        try {
+          const sfxPromise = document.getElementById('open-sfx').play();
+          if (sfxPromise !== undefined) {
+            sfxPromise.catch(function (err) {
+              console.log('Open sound effect notice (sound/open.mp3):', err);
+            });
+          }
+        } catch (e) {
+          console.log('SFX play error:', e);
+        }
+
+        try {
+          const bgmPromise = document.getElementById('bg-music').play();
+          if (bgmPromise !== undefined) {
+            bgmPromise.then(function () {
+              if (btnMusicToggle) {
+                btnMusicToggle.textContent = '♪ Music: On ♡';
+                btnMusicToggle.setAttribute('aria-pressed', 'true');
+              }
+            }).catch(function (err) {
+              console.log('Background music notice (sound/my_love.mp3):', err);
+            });
+          }
+        } catch (e) {
+          console.log('BGM play error:', e);
+        }
+
+        // 4. Start the continuous diagonal butterfly swarm
+        startContinuousButterflySwarm();
+      }
+
+      // Button interaction listeners
+      btnOpen.addEventListener('click', openBook);
+
+      // Keyboard accessibility support (Enter / Space)
+      btnOpen.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openBook();
+        }
+      });
+
+      // Bottom-right inside page music mute/unmute toggle listener
+      if (btnMusicToggle && bgMusic) {
+        btnMusicToggle.addEventListener('click', function (e) {
+          e.stopPropagation();
+
+          // Toggle audio element's real muted property
+          bgMusic.muted = !bgMusic.muted;
+
+          if (bgMusic.muted) {
+            btnMusicToggle.textContent = '♪ Music: Off ♡';
+            btnMusicToggle.setAttribute('aria-pressed', 'false');
+          } else {
+            btnMusicToggle.textContent = '♪ Music: On ♡';
+            btnMusicToggle.setAttribute('aria-pressed', 'true');
+            // If paused, resume playback
+            if (bgMusic.paused) {
+              bgMusic.play().catch(function (err) {
+                console.log('Audio resume notice:', err);
+              });
+            }
+          }
+        });
+      }
+
+    })();
+  </script>
+</body>
+</html>
